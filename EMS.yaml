@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ems-a
+  namespace: edge-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ems
+  template:
+    metadata:
+      labels:
+        app: ems
+    spec:
+      nodeSelector:
+        node-type: edge
+      containers:
+        - name: ems
+          image: ghcr.io/Patiphan-Pluem/Edge-app:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "ems_simulator.py"]
+          env:
+            - name: DB_HOST
+              value: "timescaledb-service"
+            - name: DB_PASS
+              value: "password"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"

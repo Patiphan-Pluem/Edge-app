@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: timescaledb-service
+  namespace: edge-apps
+spec:
+  # กำหนดเป็น Headless Service เพื่อให้ StatefulSet ทำงานได้เต็มประสิทธิภาพ
+  clusterIP: None
+  selector:
+    app: timescaledb
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: timescaledb
+  namespace: edge-apps
+spec:
+  serviceName: "timescaledb-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescaledb
+  template:
+    metadata:
+      labels:
+        app: timescaledb
+    spec:
+      nodeSelector:
+        node-type: edge
+      containers:
+        - name: timescaledb
+          image: timescale/timescaledb:latest-pg14
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "password"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-storage
+              mountPath: /var/lib/postgresql/data
+
+  volumeClaimTemplates:
+    - metadata:
+        name: db-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 0.5Gi
