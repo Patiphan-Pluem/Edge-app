@@ -24,7 +24,7 @@ if __name__ == "__main__":
     print("PMU Server Started on port 1410")
 
 
-    SLEEP_TIME = 1.0 / 30 
+    SLEEP_TIME = 1.0 
 
     while True:
         if pmu.clients: 
