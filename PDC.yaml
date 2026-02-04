@@ -77,5 +77,66 @@ spec:
           env:
             - name: PMU_IP
               value: "pmu-service"
+---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: grafana
+#   namespace: edge-apps
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: grafana
+#   template:
+#     metadata:
+#       labels:
+#         app: grafana
+#     spec:
+#       nodeSelector:
+#         node-type: edge
+#       securityContext:
+#         fsGroup: 472
+#         runAsUser: 472
+#       containers:
+#         - name: grafana
+#           image: grafana/grafana:latest
+#           ports:
+#             - containerPort: 3000
+#           env:
+#             - name: GF_SECURITY_ADMIN_PASSWORD
+#               value: "admin"
+#           volumeMounts:
+#             - mountPath: "/var/lib/grafana"
+#               name: grafana-storage
+#       volumes:
+#         - name: grafana-storage
+#           persistentVolumeClaim:
+#             claimName: grafana-pvc
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: grafana-service
+#   namespace: edge-apps
+# spec:
+#   type: LoadBalancer
+#   selector:
+#     app: grafana
+#   ports:
+#     - protocol: TCP
+#       port: 3000
+#       targetPort: 3000
 
-
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: grafana-pvc
+#   namespace: edge-apps
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 0.5Gi

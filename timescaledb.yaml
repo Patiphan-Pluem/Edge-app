@@ -4,14 +4,9 @@ metadata:
   name: timescaledb-service
   namespace: edge-apps
 spec:
-  # กำหนดเป็น Headless Service เพื่อให้ StatefulSet ทำงานได้เต็มประสิทธิภาพ
-  clusterIP: None
   selector:
     app: timescaledb
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
+  
 ---
 apiVersion: apps/v1
 kind: StatefulSet
