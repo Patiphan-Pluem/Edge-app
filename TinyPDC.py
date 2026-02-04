@@ -6,11 +6,11 @@ import psycopg2
 from datetime import datetime
 
 # Database Settings
-DB_HOST = os.getenv("DB_HOST", "timescaledb-service")
-DB_NAME = os.getenv("DB_NAME", "postgres")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASS = os.getenv("DB_PASS", "password")
-DB_PORT = "5432"
+# DB_HOST = os.getenv("DB_HOST", "timescaledb-service")
+# DB_NAME = os.getenv("DB_NAME", "postgres")
+# DB_USER = os.getenv("DB_USER", "postgres")
+# DB_PASS = os.getenv("DB_PASS", "password")
+# DB_PORT = "5432"
 
 def get_db_connection():
     while True:
@@ -53,8 +53,8 @@ def init_db(conn):
         print(f"Init DB Error: {e}")
 
 if __name__ == "__main__":
-    conn = get_db_connection()
-    init_db(conn)
+    #conn = get_db_connection()
+    #init_db(conn)
     
     target_ip = os.getenv("PMU_IP", "pmu-service")
     target_port = 1410
@@ -104,24 +104,24 @@ if __name__ == "__main__":
                     batch_data.append((timestamp, freq, ma, aa, mb, ab, mc, ac))
 
                     # ถ้าเต็มถุงแล้วค่อยเทลง DB
-                    if len(batch_data) >= BATCH_SIZE:
-                        try:
-                            cur = conn.cursor()
-                            query = """
-                                INSERT INTO pmu_measurements 
-                                (time, frequency, magnitude, angle, mag_b, ang_b, mag_c, ang_c)
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                            """
-                            cur.executemany(query, batch_data) # ใช้ executemany เร็วกว่ามาก
-                            conn.commit()
-                            cur.close()
+                    # if len(batch_data) >= BATCH_SIZE:
+                    #     try:
+                    #         cur = conn.cursor()
+                    #         query = """
+                    #             INSERT INTO pmu_measurements 
+                    #             (time, frequency, magnitude, angle, mag_b, ang_b, mag_c, ang_c)
+                    #             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    #         """
+                    #         cur.executemany(query, batch_data) # ใช้ executemany เร็วกว่ามาก
+                    #         conn.commit()
+                    #         cur.close()
                             
-                            print(f"Saved Batch: {len(batch_data)} records. Last Time: {timestamp}", flush=True)
-                            batch_data = [] # ล้างถุง
+                    #         print(f"Saved Batch: {len(batch_data)} records. Last Time: {timestamp}", flush=True)
+                    #         batch_data = [] # ล้างถุง
                             
-                        except Exception as db_err:
-                            print(f"DB Error: {db_err}")
-                            conn.rollback()
+                    #     except Exception as db_err:
+                    #         print(f"DB Error: {db_err}")
+                    #         conn.rollback()
 
         except Exception as e:
             print(f"PDC Error: {e}", flush=True)
