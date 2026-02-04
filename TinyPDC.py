@@ -12,45 +12,45 @@ from datetime import datetime
 # DB_PASS = os.getenv("DB_PASS", "password")
 # DB_PORT = "5432"
 
-def get_db_connection():
-    while True:
-        try:
-            conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS, port=DB_PORT)
-            print("Connected to TimescaleDB successfully!")
-            return conn
-        except Exception as e:
-            print(f"Failed to connect to DB: {e}. Retrying in 2s...", flush=True)
-            time.sleep(2)
+# def get_db_connection():
+#     while True:
+#         try:
+#             conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS, port=DB_PORT)
+#             print("Connected to TimescaleDB successfully!")
+#             return conn
+#         except Exception as e:
+#             print(f"Failed to connect to DB: {e}. Retrying in 2s...", flush=True)
+#             time.sleep(2)
 
-def init_db(conn):
-    try:
-        cur = conn.cursor()
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS pmu_measurements (
-                time TIMESTAMPTZ NOT NULL,
-                frequency DOUBLE PRECISION,
-                magnitude DOUBLE PRECISION, angle DOUBLE PRECISION,
-                mag_b DOUBLE PRECISION, ang_b DOUBLE PRECISION,
-                mag_c DOUBLE PRECISION, ang_c DOUBLE PRECISION
-            );
-        """)
-        alter_queries = [
-            "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS mag_b DOUBLE PRECISION;",
-            "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS ang_b DOUBLE PRECISION;",
-            "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS mag_c DOUBLE PRECISION;",
-            "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS ang_c DOUBLE PRECISION;"
-        ]
-        for q in alter_queries:
-            try: cur.execute(q)
-            except: pass
+# def init_db(conn):
+#     try:
+#         cur = conn.cursor()
+#         cur.execute("""
+#             CREATE TABLE IF NOT EXISTS pmu_measurements (
+#                 time TIMESTAMPTZ NOT NULL,
+#                 frequency DOUBLE PRECISION,
+#                 magnitude DOUBLE PRECISION, angle DOUBLE PRECISION,
+#                 mag_b DOUBLE PRECISION, ang_b DOUBLE PRECISION,
+#                 mag_c DOUBLE PRECISION, ang_c DOUBLE PRECISION
+#             );
+#         """)
+#         alter_queries = [
+#             "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS mag_b DOUBLE PRECISION;",
+#             "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS ang_b DOUBLE PRECISION;",
+#             "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS mag_c DOUBLE PRECISION;",
+#             "ALTER TABLE pmu_measurements ADD COLUMN IF NOT EXISTS ang_c DOUBLE PRECISION;"
+#         ]
+#         for q in alter_queries:
+#             try: cur.execute(q)
+#             except: pass
             
-        try: cur.execute("SELECT create_hypertable('pmu_measurements', 'time', if_not_exists => TRUE);")
-        except: pass
+#         try: cur.execute("SELECT create_hypertable('pmu_measurements', 'time', if_not_exists => TRUE);")
+#         except: pass
             
-        conn.commit()
-        cur.close()
-    except Exception as e:
-        print(f"Init DB Error: {e}")
+#         conn.commit()
+#         cur.close()
+#     except Exception as e:
+#         print(f"Init DB Error: {e}")
 
 if __name__ == "__main__":
     #conn = get_db_connection()
@@ -82,26 +82,27 @@ if __name__ == "__main__":
     while True:
         try:
             data = pdc.get()
+            print(data.get_measurements())
             if not data:
                 time.sleep(0.01)
                 continue
-            
-            if isinstance(data, DataFrame):
-                raw = data.get_measurements()
-                timestamp = datetime.fromtimestamp(raw['time'])
+            # print(data.get_measurements())
+            # if isinstance(data, DataFrame):
+            #     raw = data.get_measurements()
+            #     timestamp = datetime.fromtimestamp(raw['time'])
                 
-                if 'measurements' in raw and len(raw['measurements']) > 0:
-                    stream = raw['measurements'][0]
-                    freq = stream['frequency']
-                    phasors = stream.get('phasors', [])
+            #     if 'measurements' in raw and len(raw['measurements']) > 0:
+            #         stream = raw['measurements'][0]
+            #         freq = stream['frequency']
+            #         phasors = stream.get('phasors', [])
                     
-                    ma, aa, mb, ab, mc, ac = 0,0,0,0,0,0
-                    if len(phasors) >= 1: ma, aa = phasors[0]
-                    if len(phasors) >= 2: mb, ab = phasors[1]
-                    if len(phasors) >= 3: mc, ac = phasors[2]
+            #         ma, aa, mb, ab, mc, ac = 0,0,0,0,0,0
+            #         if len(phasors) >= 1: ma, aa = phasors[0]
+            #         if len(phasors) >= 2: mb, ab = phasors[1]
+            #         if len(phasors) >= 3: mc, ac = phasors[2]
 
-                    # เก็บลงถุง (Buffer)
-                    batch_data.append((timestamp, freq, ma, aa, mb, ab, mc, ac))
+            #         # เก็บลงถุง (Buffer)
+            #         batch_data.append((timestamp, freq, ma, aa, mb, ab, mc, ac))
 
                     # ถ้าเต็มถุงแล้วค่อยเทลง DB
                     # if len(batch_data) >= BATCH_SIZE:
