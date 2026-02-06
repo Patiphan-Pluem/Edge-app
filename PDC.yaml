@@ -4,6 +4,7 @@ metadata:
   name: pmu-service
   namespace: edge-apps
 spec:
+  clusterIP: None
   selector:
     app: pmu
   ports:
@@ -76,7 +77,7 @@ spec:
               cpu: "500m"
           env:
             - name: PMU_IP
-              value: "pmu-service"
+              value: "service.edge-apps.svc.cluster.local"
 ---
 # apiVersion: apps/v1
 # kind: Deployment

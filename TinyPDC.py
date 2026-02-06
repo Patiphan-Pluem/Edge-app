@@ -6,8 +6,6 @@ import psycopg2
 from datetime import datetime
 
 
-
-
 if __name__ == "__main__":
     target_ip = os.getenv("PMU_IP", "pmu-service")
     target_port = 1410
