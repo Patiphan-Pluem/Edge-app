@@ -31,7 +31,7 @@ spec:
         node-type: edge
       containers:
         - name: pmu
-          image: ghcr.io/patiphan-pluem/edge-app:v2
+          image: ghcr.io/patiphan-pluem/edge-app:v3
           imagePullPolicy: IfNotPresent
           command: ["python", "TinyPMU.py"]
           resources:
@@ -64,7 +64,7 @@ spec:
         node-type: edge
       containers:
         - name: pdc
-          image: ghcr.io/patiphan-pluem/edge-app:v2
+          image: ghcr.io/patiphan-pluem/edge-app:v3
           imagePullPolicy: IfNotPresent
           command: ["python3", "TinyPDC.py"]
           resources:
