@@ -90,6 +90,11 @@ spec:
       labels:
         app: pdc
     spec:
+      hostAliases:
+        - ip: "10.109.153.86" 
+          hostnames:
+            - "istiod.istio-system.svc"
+            - "istiod.istio-system.svc.cluster.local"
       nodeSelector:
         node-type: edge
       containers:
