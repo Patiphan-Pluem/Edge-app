@@ -14,7 +14,7 @@ spec:
         app: ems
     spec:
       hostAliases:
-        - ip: "10.109.153.86"
+        - ip: "100.72.47.100"
           hostnames:
             - "istiod.istio-system.svc"
             - "istiod.istio-system.svc.cluster.local"
