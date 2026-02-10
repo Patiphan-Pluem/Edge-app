@@ -6,6 +6,10 @@ metadata:
 spec:
   selector:
     app: timescaledb
+  ports:
+    - protocol: TCP
+      port: 5432      
+      targetPort: 5432
 
 ---
 apiVersion: apps/v1
