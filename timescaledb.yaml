@@ -6,7 +6,7 @@ metadata:
 spec:
   selector:
     app: timescaledb
-  
+
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -24,6 +24,8 @@ spec:
       labels:
         app: timescaledb
     spec:
+      hostAliases:
+        - ip: "100.72.47.100"
       nodeSelector:
         node-type: edge
       containers:
