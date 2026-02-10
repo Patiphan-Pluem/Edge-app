@@ -72,8 +72,9 @@ metadata:
   namespace: edge-apps
 subsets:
   - addresses:
-      - ip: 172.17.1.49
-      - port: 1410
+      - ip: 172.17.1.49  
+    ports:
+      - port: 1410 
 ---
 apiVersion: apps/v1
 kind: Deployment
