@@ -30,6 +30,9 @@ spec:
     spec:
       hostAliases:
         - ip: "100.72.47.100"
+          hostnames:
+            - "istiod.istio-system.svc"
+            - "istiod.istio-system.svc.cluster.local"
       nodeSelector:
         node-type: edge
       containers:
