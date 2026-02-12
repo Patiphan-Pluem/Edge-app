@@ -72,15 +72,17 @@ metadata:
   namespace: edge-apps
 subsets:
   - addresses:
-      - ip: 100.120.70.56 
+      - ip: 100.120.70.56
     ports:
-      - port: 1410 
+      - port: 1410
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pdc-deployment
   namespace: edge-apps
+  annotations:
+    traffic.sidecar.istio.io/excludeOutboundPorts: "1410"
 spec:
   replicas: 1
   selector:
@@ -92,7 +94,7 @@ spec:
         app: pdc
     spec:
       hostAliases:
-        - ip: "100.72.47.100" 
+        - ip: "100.72.47.100"
           hostnames:
             - "istiod.istio-system.svc"
             - "istiod.istio-system.svc.cluster.local"
