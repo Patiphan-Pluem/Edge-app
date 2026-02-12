@@ -72,7 +72,7 @@ metadata:
   namespace: edge-apps
 subsets:
   - addresses:
-      - ip: 100.120.70.56  
+      - ip: 100.120.70.56 
     ports:
       - port: 1410 
 ---
