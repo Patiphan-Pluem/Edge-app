@@ -97,6 +97,7 @@ spec:
             ISTIO_META_DNS_AUTO_ALLOCATE: "true"
       labels:
         app: pdc
+        sidecar.istio.io/inject: "false"
     spec:
       hostAliases:
         - ip: "100.72.47.100"
