@@ -107,6 +107,10 @@ spec:
           hostnames:
             - "timescaledb-service"
             - "timescaledb-service.edge-apps.svc.cluster.local"
+        - ip: "192.168.177.139" # Private IP ของ PMU (Alpine)
+          hostnames:
+            - "pmu-service"
+            - "pmu-service.edge-apps.svc.cluster.local"
       nodeSelector:
         node-type: edge
       containers:
