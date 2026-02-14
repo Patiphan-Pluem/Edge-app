@@ -10,6 +10,12 @@ spec:
       app: ems
   template:
     metadata:
+      annotations:
+        proxy.istio.io/config: |
+          holdApplicationUntilProxyReceivesConfig: true
+          proxyMetadata:
+            ISTIO_META_DNS_CAPTURE: "true"
+            ISTIO_META_DNS_AUTO_ALLOCATE: "true"
       labels:
         app: ems
     spec:
@@ -22,7 +28,7 @@ spec:
         node-type: edge
       containers:
         - name: ems
-          image: ghcr.io/patiphan-pluem/edge-app:v5
+          image: ghcr.io/patiphan-pluem/edge-app:v6
           imagePullPolicy: IfNotPresent
           command: ["python", "ems_simulator.py"]
           env:
