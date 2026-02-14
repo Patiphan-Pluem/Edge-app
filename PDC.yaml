@@ -120,6 +120,8 @@ spec:
           env:
             - name: PMU_IP
               value: "pmu-service.edge-apps.svc.cluster.local"
+            - name: DB_HOST
+              value: "timescaledb-service.edge-apps.svc.cluster.local"
 ---
 # apiVersion: apps/v1
 # kind: Deployment
