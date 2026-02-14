@@ -81,12 +81,6 @@ kind: Deployment
 metadata:
   name: pdc-deployment
   namespace: edge-apps
-  annotations:
-    traffic.sidecar.istio.io/excludeOutboundPorts: "1410"
-    proxy.istio.io/config: |
-      proxyMetadata:
-        ISTIO_META_DNS_CAPTURE: "true"
-        ISTIO_META_DNS_AUTO_ALLOCATE: "true"
 spec:
   replicas: 1
   selector:
@@ -94,6 +88,12 @@ spec:
       app: pdc
   template:
     metadata:
+      annotations:
+        traffic.sidecar.istio.io/excludeOutboundPorts: "1410"
+        proxy.istio.io/config: |
+          proxyMetadata:
+            ISTIO_META_DNS_CAPTURE: "true"
+            ISTIO_META_DNS_AUTO_ALLOCATE: "true"
       labels:
         app: pdc
     spec:
