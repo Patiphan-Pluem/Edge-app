@@ -24,6 +24,10 @@ spec:
           hostnames:
             - "istiod.istio-system.svc"
             - "istiod.istio-system.svc.cluster.local"
+        - ip: "10.106.239.5"  
+          hostnames:
+            - "timescaledb-service"
+            - "timescaledb-service.edge-apps.svc.cluster.local"  
       nodeSelector:
         node-type: edge
       containers:
