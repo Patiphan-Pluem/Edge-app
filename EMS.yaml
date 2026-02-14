@@ -22,7 +22,7 @@ spec:
         node-type: edge
       containers:
         - name: ems
-          image: ghcr.io/patiphan-pluem/edge-app:v4
+          image: ghcr.io/patiphan-pluem/edge-app:v5
           imagePullPolicy: IfNotPresent
           command: ["python", "ems_simulator.py"]
           env:
