@@ -56,7 +56,7 @@ if __name__ == "__main__":
     conn = get_db_connection()
     init_db(conn)
     
-    target_ip = os.getenv("PMU_IP", "pmu-service")
+    target_ip = os.getenv("PMU_IP", "pmu-service.edge-apps")
     target_port = 1410
     pdc = Pdc(pdc_id=7, pmu_ip=target_ip, pmu_port=target_port)
 
