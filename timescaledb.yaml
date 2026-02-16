@@ -30,6 +30,18 @@ spec:
     spec:
       nodeSelector:
         node-type: edge
+
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - timescaledb
+              topologyKey: "kubernetes.io/hostname"
+
       containers:
         - name: timescaledb
           image: timescale/timescaledb:latest-pg14
