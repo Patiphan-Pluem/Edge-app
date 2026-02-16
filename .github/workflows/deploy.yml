@@ -32,5 +32,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/patiphan-pluem/edge-app:v6
+            ghcr.io/patiphan-pluem/edge-app:v7
             ghcr.io/patiphan-pluem/edge-app:${{ github.sha }}

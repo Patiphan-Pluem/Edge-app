@@ -6,11 +6,11 @@ metadata:
 spec:
   selector:
     app: timescaledb
+  internalTrafficPolicy: Local 
   ports:
     - protocol: TCP
       port: 5432      
       targetPort: 5432
-
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -18,8 +18,8 @@ metadata:
   name: timescaledb
   namespace: edge-apps
 spec:
-  serviceName: "timescaledb-service"
-  replicas: 1
+  serviceName: "timescaledb-service.edge-apps"
+  replicas: 5
   selector:
     matchLabels:
       app: timescaledb
@@ -28,11 +28,6 @@ spec:
       labels:
         app: timescaledb
     spec:
-      hostAliases:
-        - ip: "100.72.47.100"
-          hostnames:
-            - "istiod.istio-system.svc"
-            - "istiod.istio-system.svc.cluster.local"
       nodeSelector:
         node-type: edge
       containers:

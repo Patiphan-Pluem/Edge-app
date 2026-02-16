@@ -3,7 +3,7 @@ import time
 import psycopg2
 import psutil
 
-DB_HOST = os.getenv('DB_HOST', 'timescaledb-service')
+DB_HOST = os.getenv('DB_HOST', 'timescaledb-service.edge-apps')
 DB_USER = os.getenv('DB_USER', 'postgres')
 DB_PASS = os.getenv('DB_PASS', 'password')
 DB_NAME = os.getenv('DB_NAME', 'postgres')

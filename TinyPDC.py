@@ -6,7 +6,7 @@ import psycopg2
 from datetime import datetime
 
 # Database Settings
-DB_HOST = os.getenv("DB_HOST", "timescaledb-service.edge-apps.svc.cluster.local.")
+DB_HOST = os.getenv("DB_HOST", "timescaledb-service.edge-apps")
 DB_NAME = os.getenv("DB_NAME", "postgres")
 DB_USER = os.getenv("DB_USER", "postgres")
 DB_PASS = os.getenv("DB_PASS", "password")

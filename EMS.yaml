@@ -4,40 +4,33 @@ metadata:
   name: ems-a
   namespace: edge-apps
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: ems
   template:
     metadata:
       annotations:
-        proxy.istio.io/config: |
-          holdApplicationUntilProxyReceivesConfig: true
-          proxyMetadata:
-            ISTIO_META_DNS_CAPTURE: "true"
-            ISTIO_META_DNS_AUTO_ALLOCATE: "true"
-      labels:
         app: ems
     spec:
-      hostAliases:
-        - ip: "100.72.47.100"
-          hostnames:
-            - "istiod.istio-system.svc"
-            - "istiod.istio-system.svc.cluster.local"
-        - ip: "10.106.239.5"  
-          hostnames:
-            - "timescaledb-service"
-            - "timescaledb-service.edge-apps.svc.cluster.local"  
       nodeSelector:
         node-type: edge
+
+      topologySpreadConstraints:
+        - maxSkew: 1 
+          topologyKey: "kubernetes.io/hostname" 
+          whenUnsatisfiable: ScheduleAnyway 
+          labelSelector:
+            matchLabels:
+              app: ems
+
       containers:
         - name: ems
-          image: ghcr.io/patiphan-pluem/edge-app:v6
+          image: ghcr.io/patiphan-pluem/edge-app:v7
           imagePullPolicy: IfNotPresent
           command: ["python", "ems_simulator.py"]
           env:
             - name: DB_HOST
-              value: "timescaledb-service"
+              value: "timescaledb-service.edge-apps"
             - name: DB_PASS
               value: "password"
           resources:
