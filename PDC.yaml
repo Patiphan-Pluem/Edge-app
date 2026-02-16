@@ -29,7 +29,7 @@ subsets:
       - port: 1410
 ---
 apiVersion: apps/v1
-kind: Daemonset
+kind: DaemonSet
 metadata:
   name: pdc-deployment
   namespace: edge-apps
