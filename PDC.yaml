@@ -63,7 +63,7 @@ spec:
               cpu: "500m"
           env:
             - name: PMU_IP
-              value: "pmu-service.edge-apps"
+              value: "192.168.177.140"
             - name: DB_HOST
               value: "timescaledb-service.edge-apps"
 ---
