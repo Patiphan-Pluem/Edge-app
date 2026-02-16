@@ -9,7 +9,7 @@ spec:
       app: ems
   template:
     metadata:
-      annotations:
+      labels:
         app: ems
     spec:
       nodeSelector:

@@ -18,7 +18,7 @@ metadata:
   name: timescaledb
   namespace: edge-apps
 spec:
-  serviceName: "timescaledb-service.edge-apps"
+  serviceName: "timescaledb-service"
   replicas: 5
   selector:
     matchLabels:
