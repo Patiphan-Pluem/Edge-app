@@ -46,6 +46,9 @@ spec:
     spec:
       nodeSelector:
         node-type: edge
+
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet # เพื่อให้ยังคุยกับ Database ผ่าน DNS ของ K8s ได้
       containers:
         - name: pdc
           image: ghcr.io/patiphan-pluem/edge-app:v7
@@ -64,3 +67,4 @@ spec:
             - name: DB_HOST
               value: "timescaledb-service.edge-apps"
 ---
+
