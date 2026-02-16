@@ -58,7 +58,7 @@ if __name__ == "__main__":
     
     target_ip = os.getenv("PMU_IP", "pmu-service")
     target_port = 1410
-    pdc = Pdc(pdc_id=7, pmu_ip=target_ip, pmu_port=target_port)
+    pdc = Pdc(pdc_id=7, pmu_ip=target_ip, pmu_port=target_port, pmu_id=7)
 
     # Loop เชื่อมต่อ
     while True:
