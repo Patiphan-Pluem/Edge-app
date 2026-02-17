@@ -11,8 +11,8 @@ metadata:
   name: pmu-service
   namespace: edge-apps
 spec:
-  selector:
-    app: pmu
+  # selector:
+  #   app: pmu
   ports:
     - protocol: TCP
       port: 1410
