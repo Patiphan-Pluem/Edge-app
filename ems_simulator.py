@@ -1,56 +1,30 @@
 import os
 import time
 import psycopg2
-import psutil
+import numpy as np
+from datetime import datetime  # เพิ่มเพื่อแสดงเวลาปัจจุบัน
 
+# การตั้งค่าเชื่อมต่อ Database
 DB_HOST = os.getenv('DB_HOST', 'timescaledb-service.edge-apps')
 DB_USER = os.getenv('DB_USER', 'postgres')
 DB_PASS = os.getenv('DB_PASS', 'password')
 DB_NAME = os.getenv('DB_NAME', 'postgres')
 
-SERVICE_NAME = "ems-simulator"
-
-print(f"--- Starting EMS ---")
+SIMULATION_MODE = os.getenv('SIM_MODE', 'matrix') 
 
 def get_db_connection():
     try:
-        conn = psycopg2.connect(
-            host=DB_HOST, user=DB_USER, password=DB_PASS, dbname=DB_NAME
-        )
-        return conn
+        return psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASS, dbname=DB_NAME, connect_timeout=5)
     except Exception as e:
-        print(f"[DB Error] Connection failed: {e}")
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] [DB Error] {e}")
         return None
 
-def init_metrics_db():
-    conn = get_db_connection()
-    if not conn: return
-    try:
-        cur = conn.cursor()
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS system_metrics (
-                time TIMESTAMPTZ NOT NULL,
-                service_name TEXT,
-                cpu_percent DOUBLE PRECISION,
-                memory_mb DOUBLE PRECISION
-            );
-        """)
-        try:
-            cur.execute("SELECT create_hypertable('system_metrics', 'time', if_not_exists => TRUE);")
-        except: pass
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print(f"Init DB Error: {e}")
-
-def get_count_workload():
+def get_pmu_count():
     conn = get_db_connection()
     if not conn: return 0
     try:
         cur = conn.cursor()
-        sql = "SELECT count(*) FROM pmu_measurements WHERE time > NOW() - INTERVAL '10 seconds';"
-        cur.execute(sql)
+        cur.execute("SELECT count(*) FROM pmu_measurements WHERE time > NOW() - INTERVAL '10 seconds';")
         result = cur.fetchone()
         cur.close()
         conn.close()
@@ -58,59 +32,48 @@ def get_count_workload():
     except Exception as e:
         return 0
 
-def save_metrics(cpu, mem):
-    conn = get_db_connection()
-    if not conn: return
-    try:
-        cur = conn.cursor()
-        sql = """
-            INSERT INTO system_metrics (time, service_name, cpu_percent, memory_mb)
-            VALUES (NOW(), %s, %s, %s)
-        """
-        cur.execute(sql, (SERVICE_NAME, cpu, mem))
-        conn.commit()
-        cur.close()
-        conn.close()
-    except Exception as e:
-        print(f"[Save Metrics Error] {e}")
+def ems_nested_loop(n):
+    start_time = time.time()
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] --- [Mode: Loop] Processing n={n} ---")
+    
+    res = 0
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                res += (i * j) + k
+    
+    elapsed = time.time() - start_time
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Loop calculation finished in {elapsed:.2f} seconds.")
+    return res
 
-def burn_cpu(row_count):
-    if row_count <= 0:
-        return
+def ems_matrix(n):
+    start_time = time.time()
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] --- [Mode: Matrix] Processing n={n} ---")
     
-    base_loops = 100000 
-    iterations = row_count * base_loops
+    A = np.random.rand(n, n)
+    B = np.random.rand(n, n)
+    res = np.dot(A, B)
     
-    print(f"Load: {row_count} records -> Processing...")
-    
-    x = 1.0001
-    for _ in range(iterations):
-        x = x * x
-        if x > 1e200: x = 1.0001
-        
-time.sleep(5)
-init_metrics_db()
+    elapsed = time.time() - start_time
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] Matrix calculation finished in {elapsed:.2f} seconds.")
+    return res
 
-current_process = psutil.Process(os.getpid())
-current_process.cpu_percent()
+print(f"--- EMS Black Box Engine Starting (Mode: {SIMULATION_MODE}) ---")
 
 while True:
     try:
-      
-        current_count = get_count_workload()
-        burn_cpu(current_count)
+        data_count = get_pmu_count()
         
-        cpu_usage = current_process.cpu_percent(interval=None) / psutil.cpu_count()
-        
-        memory_usage = current_process.memory_info().rss / 1024 / 1024
-        
-        save_metrics(cpu_usage, memory_usage)
-        print(f"Metrics Saved: CPU={cpu_usage:.2f}%, RAM={memory_usage:.2f}MB")
+        if data_count > 0:
+            if SIMULATION_MODE == 'matrix':
+                ems_matrix(data_count)
+            else:
+                ems_nested_loop(data_count)
+        else:
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] No new PMU data. Waiting...")
         
         time.sleep(10)
 
-    except KeyboardInterrupt:
-        break
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] Error: {e}")
         time.sleep(5)
