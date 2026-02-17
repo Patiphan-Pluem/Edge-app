@@ -7,7 +7,7 @@ if __name__ == "__main__":
     pmu = Pmu(ip="0.0.0.0", port=1410)
     pmu.logger.setLevel("DEBUG")
 
-    cfg = ConfigFrame2(7, 1000000, 1, "Random Station", 7, (True, True, True, True), 
+    cfg = ConfigFrame2(1410, 1000000, 1, "Random Station", 1410, (True, True, True, True), 
                        3, 1, 1, 
                        ["VA", "VB", "VC", "ANALOG1", "BREAKER 1 STATUS",
                         "BREAKER 2 STATUS", "BREAKER 3 STATUS", "BREAKER 4 STATUS", "BREAKER 5 STATUS",
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     print("PMU Server Started on port 1410")
 
 
-    SLEEP_TIME = 1.0 
+    SLEEP_TIME = 1.0 / 30 
 
     while True:
         if pmu.clients: 
